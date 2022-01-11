@@ -1,0 +1,167 @@
+﻿@page "/DogDetails"
+@using BlazorClientDemo.Data.ViewModels
+@using BlazorClientDemo.ServicesProxy.Interfaces
+@using System.Threading.Tasks
+@using BlazorClientDemo.Pages;
+
+<PageTitle>Dog Details</PageTitle>
+
+<h1 class="text-center fw-bolder">Create Bug</h1>
+
+<p>Select Dog Breeds from below dropdown</p>
+
+<div class="form-group">
+    <select id="BreedType" class="form-control" @bind="@selectedBreed">
+        <option value="0" selected> Select </option>
+        @foreach (var eachBreed in lstBreedTypeVM)
+        {
+            <option value="@eachBreed?.Name"> @eachBreed?.Name </option>
+        }
+    </select>
+
+    @foreach (var club in ClubList())
+    {
+      <input type="checkbox" @onchange="eventArgs => { CheckboxClicked(club, eventArgs.Value); }" />@club<br />
+    }
+   @myValue
+</div>
+
+<br />
+<div class="form-group">
+    <button class="btn btn-primary mt-2 col-md-12" @onclick="ClickHere">Click me</button>
+</div>
+<div class="form-group">
+    <button class="btn btn-primary mt-2 col-md-12" @onclick="RandomImage">Random Dog</button>
+</div>
+<br />
+<p role="status">Breed Name:  @selectedBreed</p>
+<br />
+@if (objDogBreedListResponseVM != null)
+{
+    <h3 class="text-center fw-bolder">Dog List : @selectedBreed</h3>
+
+
+
+    <div class="serv !important">
+        <ul>
+            @foreach (var name in objDogBreedListResponseVM.message)
+            {
+                <li>
+                    <div class="h3-service"><img src="@name" class="img-fluid mb-2" style="width:200px; height:200px;"  /></div>
+                </li>
+            }
+        </ul>
+    </div>
+
+}
+else
+{
+    <p>No records found</p>
+}
+
+<br />
+@if (randomDogResponseVM != null)
+{
+    <h3 class="text-center fw-bolder">Dog List : @selectedBreed random image</h3>
+    <div class="container">
+
+
+
+        <div class="row">
+
+            <div class="col-md-8 offset-md-2 text-center">
+                <img src="@randomDogResponseVM.message" class="img-fluid" />
+            </div>
+
+
+        </div>
+
+
+
+
+    </div>
+}
+
+<p class="text-center">This component demonstrates Dog Breed from API.</p>
+
+
+@functions {
+    public string myValue{ get; set; }
+    public List<string> ClubMember { get; set; } = new List<string>();
+    void CheckboxClicked(string clubID, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!ClubMember.Contains(clubID))
+            {
+                ClubMember.Add(clubID);
+               
+            }
+        }
+        else
+        {
+            if (ClubMember.Contains(clubID))
+            {
+                ClubMember.Remove(clubID);
+            }
+        }
+         myValue = clubID;
+    }
+
+    public List<String> ClubList()
+    {
+        // fetch from API or...
+        List<String> c = new List<String>();
+        c.Add("Clube01");
+        c.Add("Clube02");
+        return c;
+    }
+
+}
+
+@code {
+
+    //private int iCount { get; set; } = 0;
+
+    //string selectedBreed = string.Empty;
+
+    //string SelectedBreed
+    //{
+    //    get => selectedBreed;
+    //    set { selectedBreed = value; }
+    //}
+
+    //[CascadingParameter(Name = "ErrorComponent")]
+    //protected IErrorComponent ErrorComponent { get; set; }
+
+    //private DogBreedListResponseVM? objDogBreedListResponseVM { get; set; }
+    //private RandomDogResponseVM? randomDogResponseVM { get; set; }
+    //private List<BreedTypeVM?> lstBreedTypeVM = new List<BreedTypeVM?>();
+    ////protected override async Task OnInitializedAsync()
+    ////{
+    ////    lstBreedTypeVM = await Dogs.GetBreedTypes();
+    ////}
+
+    //private async Task ClickHere(MouseEventArgs e)
+    //{
+    //    objDogBreedListResponseVM = await Dogs.GetDogBreedList(SelectedBreed);
+    //}
+
+    //private async Task RandomImage(MouseEventArgs e)
+    //{
+    //    try
+    //    {
+
+
+    //        randomDogResponseVM = await Dogs.GetRandomImage(SelectedBreed);
+
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        ErrorComponent.ShowError(ex.Message, ex.StackTrace);
+    //        randomDogResponseVM = null;
+
+    //    }
+
+   // }
+}
